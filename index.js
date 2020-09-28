@@ -335,9 +335,26 @@ async function transcribe_witai(file) {
         console.log(output)
         stream.destroy()
         if (output && '_text' in output && output._text.length)
-            return output._text
+ // For Japanese(beta) Wit.AI somehow returns text with three candidates separated by slush for a word, each word separated by space, like: "/candidateA/candidateB/candidateC /candidateA/candidateB/candidateC". We need to eliminate candidateB and C as well as slush and space to curve out the text.
+            let finaltext = "";
+            let fulltext = output._text;
+            let textArr = fulltext.split(' ');
+            for(let i = 0; i < textArr.length; i++) {
+                let cuttext = textArr[i] + "/"; // Wit.AI gives so slush for high confidence words
+                let wordArr = cuttext.split('/');
+                finaltext = finaltext + wordArr[0] + wordArr[1];
+            }
+            return finaltext;
         if (output && 'text' in output && output.text.length)
-            return output.text
+            let finaltext = "";
+            let fulltext = output.text;
+            let textArr = fulltext.split(' ');
+            for(let i = 0; i < textArr.length; i++) {
+                let cuttext = textArr[i] + "/";
+                let wordArr = cuttext.split('/');
+                finaltext = finaltext + wordArr[0] + wordArr[1];
+            }
+            return finaltext;
         return output;
     } catch (e) { console.log('transcribe_witai 851:' + e) }
 }
