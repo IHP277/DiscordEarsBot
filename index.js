@@ -311,7 +311,7 @@ function process_commands_query(txt, mapKey, user) {
             finaltext = finaltext + wordArr[0] + wordArr[1];
         }
         
-        val.text_Channel.send(user.username + ': ' + txt)
+        val.text_Channel.send(user.username + ': ' + finaltext)
     }
 }
 
